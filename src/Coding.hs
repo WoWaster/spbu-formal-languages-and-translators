@@ -72,21 +72,26 @@ encodeProduction (ProdTerminalNonterminal text) = do
                 put $ state{terminalCount = terminalCount state + 1, terminalMap = HashMap.insert text num (terminalMap state)}
                 return $ fromString (show num ++ " ")
 
-encodeRule :: Rule -> State CodingState Builder
-encodeRule rule = do
+encodeNonterminal :: Text -> State CodingState Builder
+encodeNonterminal text = do
     state <- get
-    productionsWithState <- mapM (encodeProduction) (productions rule)
-    let productions = foldr (<>) "" productionsWithState
-    nonterminalNum <- case HashMap.lookup (nonterminal rule) (nonterminalMap state) of
+    case HashMap.lookup text (nonterminalMap state) of
         Just num -> return $ fromString (show num ++ " ")
         Nothing -> do
             let num = nonterminalCount state
             put $
                 state
                     { nonterminalCount = nonterminalCount state + 1
-                    , nonterminalMap = HashMap.insert (nonterminal rule) num (nonterminalMap state)
+                    , nonterminalMap = HashMap.insert text num (nonterminalMap state)
                     }
             return $ fromString (show num ++ " ")
+
+encodeRule :: Rule -> State CodingState Builder
+encodeRule rule = do
+    state <- get
+    nonterminalNum <- encodeNonterminal (nonterminal rule)
+    productionsWithState <- mapM (encodeProduction) (productions rule)
+    let productions = foldr (<>) "" productionsWithState
 
     return $
         nonterminalNum

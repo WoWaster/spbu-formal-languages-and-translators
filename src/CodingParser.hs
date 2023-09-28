@@ -78,7 +78,6 @@ pRule = do
 
 pRules :: Parser [Rule]
 pRules = do
-    rules <- some $ try pRule
-    _ <- lexeme (string "Eofgram")
+    rules <- manyTill pRule (lexeme (string "Eofgram"))
     _ <- eof
     return rules
