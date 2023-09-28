@@ -26,6 +26,7 @@ common common-depends
     , containers            >=0.6.7    && <1.0
     , megaparsec            >=9.5.0    && <9.6
     , mtl                   >=2.3.1    && <2.4
+    , pretty-simple         >=4.1.2.0
     , text                  >=2.0.2    && <2.1
     , unordered-containers  >=0.2.19   && <0.3
 
