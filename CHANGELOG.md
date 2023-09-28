@@ -1,4 +1,4 @@
-# Revision history for parsecTry
+# Revision history for spbu-formal-languages-and-translators
 
 ## 0.1.0.0 -- YYYY-mm-dd
 
