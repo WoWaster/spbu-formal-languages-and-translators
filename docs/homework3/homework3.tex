@@ -1,0 +1,142 @@
+\documentclass[12pt, oneside]{memoir}
+\input{../preamble.tex}
+\title{ТФЯиТ. Домашняя работа №3}
+\author{Николай Пономарев, группа 21.Б10-мм}
+
+% \tikzexternalize
+\semiisopage
+\begin{document}
+\maketitle
+
+\section*{Упражнение I-3.2}
+
+\begin{solution}
+    {Грамматика, порождающая числа без знака языка Паскаль:
+        \begin{bnf*}
+            \bnfprod{NUMBER}{\bnfts{d} \bnfor \bnfts{d} \bnfpn{FRACTION} \bnfor \bnfts{d} \bnfpn{EXPONENT}} \\
+            \bnfmore{\bnfor \bnfts{d} \bnfpn{FLOAT} \bnfor \bnfts{d} \bnfpn{NUMBER}} \\
+            \bnfprod{FRACTION}{\bnfts{.} \bnfpn{INT}} \\
+            \bnfprod{INT}{\bnfts{d} \bnfor \bnfts{d} \bnfpn{INT}} \\
+            \bnfprod{EXPONENT}{\bnfts{e} \bnfpn{INTEGER}} \\
+            \bnfprod{INTEGER}{\bnfts{+} \bnfpn{INT} \bnfor \bnfts{-} \bnfpn{INT} \bnfor \bnfts{d} \bnfor \bnfts{d} \bnfpn{INT}} \\
+            \bnfprod{FLOAT}{\bnfts{.} \bnfpn{FREXP}} \\
+            \bnfprod{INT}{\bnfts{d} \bnfpn{EXPONENT} \bnfor \bnfts{d} \bnfpn{FREXP}}
+        \end{bnf*}
+    }
+    {Конечный автомат по данной грамматике.}
+    {Предъявим NFA.}
+    \begin{center}
+        \begin{tikzpicture}[on grid,auto,node distance=4cm,every state/.style={font=\tiny}]
+            \node[state, initial above] (number) {NUMBER};
+            \node[state] (fraction) [below left=of number] {FRACTION};
+            \node[state] (int) [below=of fraction] {INT};
+            \node[state] (exponent) [below=of number] {EXPONENT};
+            \node[state] (integer) [below=of exponent] {INTEGER};
+            \node[state] (float) [below right=of number] {FLOAT};
+            \node[state] (frexp) [below=of float] {FREXP};
+            \node[state, accepting] (accepting) [below right=of frexp] {ACC};
+
+            \path[->] (number) edge [loop left] node {$d$} ();
+            \path[->] (number) edge node {$d$} (fraction);
+            \path[->] (fraction) edge node {$\cdot$} (int);
+            \path[->] (int) edge [loop left] node {$d$} ();
+            \path[->] (number) edge node {$d$} (exponent);
+            \path[->] (exponent) edge node {$e$} (integer);
+            \path[->] (integer) edge [bend left=30] node [above]{$+$} (int);
+            \path[->] (integer) edge [bend right=30] node [above]{$-$} (int);
+            \path[->] (integer) edge node [above]{$d$} (int);
+            \path[->] (number) edge node {$d$} (float);
+            \path[->] (float) edge node {$\cdot$} (frexp);
+            \path[->] (frexp) edge [loop right] node {$d$} ();
+            \path[->] (frexp) edge node {$d$} (exponent);
+            \path[->] (number) edge [bend left = 60] node {$d$} (accepting);
+            \path[->] (integer) edge node {$d$} (accepting);
+            \path[->] (int) edge [bend right = 40] node {$d$} (accepting);
+        \end{tikzpicture}
+    \end{center}
+\end{solution}
+
+
+\section*{Упражнение I-3.3}
+\begin{solution}
+    {Конечный автомат из упражнения I-3.2.}
+    {Построить детерминированный автомат на основе NFA из упражнения I-3.2.}
+    {Воспользуемся алгоритмом из теоремы 3.4.}
+    Для начала формально опишем NFA из упражнения I-3.2.
+    $M = (Q, \Sigma, \delta, q_0, F)$, где
+    \begin{align*}
+        Q = \{          & \mathrm{NUMBER}, \mathrm{FRACTION}, \mathrm{EXPONENT}, \mathrm{FLOAT}, \\
+                        & \mathrm{INT}, \mathrm{INTEGER}, \mathrm{FREXP}, \mathrm{ACC}\}         \\
+        \Sigma = \{     & d, e, ., +, -\}                                                        \\
+        q_0         ={} & \mathrm{NUMBER}                                                        \\
+        F = \{          & \mathrm{ACC}\}
+    \end{align*}
+    и набор отображений $\delta$:
+    \begin{align*}
+        \delta(\mathrm{NUMBER}, d)         & = \{\mathrm{NUMBER}, \mathrm{FRACTION}, \mathrm{EXPONENT}, \\
+                                           & \mathrm{FLOAT},  \mathrm{ACC}\}                            \\
+        \delta(\mathrm{FRACTION}, .)       & = \{\mathrm{INT}\}                                         \\
+        \delta(\mathrm{INT}, d)            & = \{\mathrm{INT}, \mathrm{ACC}\}                           \\
+        \delta(\mathrm{EXPONENT}, e)       & = \{\mathrm{INTEGER} \}                                    \\
+        \delta(\mathrm{INTEGER}, \{+, -\}) & = \{\mathrm{INT}\}                                         \\
+        \delta(\mathrm{INTEGER}, d)        & = \{\mathrm{INT}, \mathrm{ACC}\}                           \\
+        \delta(\mathrm{FLOAT}, .)          & = \{\mathrm{FREXP}\}                                       \\
+        \delta(\mathrm{FREXP}, d)          & = \{\mathrm{EXPONENT}, \mathrm{FREXP}\}
+    \end{align*}
+    Будем использовать алгоритм теоремы 3.4 для получения DFA $M' = (Q', \Sigma, \delta', q_0', F')$, где $\Sigma$ как выше.
+    Для начала возьмём $Q' = 2^Q$, и положим $q_0' = [q_0]$, а так же $F' = \{E \in Q' : F \subset E\}$, далее уменьшим множества $Q'$ и $F'$.
+
+    Переобозначим для краткости необходимые нам множества:
+    \begin{align*}
+        q_0 & = [\mathrm{NUMBER}]                                                                                 & q_4 & = [\mathrm{INT}, \mathrm{ACC}, \mathrm{EXPONENT}, \mathrm{FREXP}] \\
+        q_1 & = \mathrlap{[\mathrm{NUMBER}, \mathrm{FRACTION}, \mathrm{EXPONENT}, \mathrm{FLOAT},  \mathrm{ACC}]}                                                                           \\
+        q_2 & = [\mathrm{INT, FREXP}]                                                                             & q_5 & = [\mathrm{INT}, \mathrm{ACC}]                                    \\
+        q_3 & = [\mathrm{INTEGER}]                                                                                & q_6 & = [\mathrm{INT}]
+    \end{align*}
+    Теперь построим набор отображений $\delta'$:
+    \begin{align*}
+        \delta'(q_0, d) & = q_1 & \delta'(q_3, d)        & = q_5 \\
+        \delta'(q_1, d) & = q_1 & \delta'(q_3, \{+, -\}) & = q_6 \\
+        \delta'(q_1, .) & = q_2 & \delta'(q_4, d)        & = q_4 \\
+        \delta'(q_1, e) & = q_3 & \delta'(q_4, e)        & = q_3 \\
+        \delta'(q_2, d) & = q_4 & \delta'(q_5, d)        & = q_5 \\
+                        &       & \delta'(q_6, d)        & = q_5
+    \end{align*}
+    Получили DFA $M' = (Q', \Sigma, \delta', q_0', F')$, где $Q' = \{q_0, q_1, q_2, q_3, q_4, q_5, q_6\}$, $q_0' = q_0$ и $F' = \{q_1, q_4, q_5\}$.
+\end{solution}
+
+\section*{Упражнение I-3.4}
+\begin{solution}
+    {DFA из упражнения I-3.3.}
+    {Построить эквивалентную автоматную грамматику.}
+    {Воспользуемся алгоритмом из теоремы 3.6.}
+    Будем использовать DFA $M' = (Q', \Sigma, \delta', q_0', F')$, построенный выше.
+    Пусть $G = (V_N, V_T, P, S)$, где $V_N = Q'$, $V_T = \Sigma$, $S = q_0$ и набор правил:
+    \begin{align*}
+        P = \{ & q_0 \to d q_1, q_0 \to d,                               \\
+               & q_1 \to d q_1, q_1 \to d, q_1 \to . q_2, q_1 \to e q_3, \\
+               & q_2 \to d q_4, q_2 \to d,                               \\
+               & q_3 \to d q_5, q_3 \to d, q_3 \to + q_6, q_3 \to - q_6, \\
+               & q_4 \to d q_4, q_4 \to d, q_4 \to e q_3,                \\
+               & q_5 \to d q_5, q_5 \to d,                               \\
+               & q_6 \to d q_5, q_6 \to d\}.
+    \end{align*}
+\end{solution}
+
+\section*{Упражнение I-3.5}
+\begin{solution}
+    {Автоматная грамматика из упражнения I-3.4.}
+    {Построить по ней эквивалентное регулярное выражение.}
+    {Воспользоваться грамматикой и нотацией из примера 3.5.}
+    Получается регулярное выражение: $d^+[.d^+][e[+,-]d^+]$.
+\end{solution}
+
+% \section*{Упражнение I-3.6}
+% \begin{solution}
+%     {DFA $M$, полученный в упражнении I-3.3.}
+%     {Определить является ли он минимальным.}
+%     {Воспользуемся алгоритмом теоремы 3.3.}
+
+% \end{solution}
+
+\end{document}
