@@ -30,7 +30,7 @@ concordance file = do
     text <- readFile file
     let textLines = lines text
         res = ifoldr addLine Map.empty textLines
-    pPrint $ Map.toList res
+    mapM_ (putStrLn . show) (Map.toList res)
 
 main :: IO ()
 main = concordance =<< execParser opts
