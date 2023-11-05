@@ -1,0 +1,41 @@
+\documentclass[12pt, oneside]{memoir}
+\input{../preamble.tex}
+\title{ТФЯиТ. КР №1}
+\author{Николай Пономарев, группа 21.Б10-мм}
+
+% \tikzexternalize
+
+\begin{document}
+\maketitle
+
+\chapter{Прямоугольники}
+Код основной функции программы на языке Haskell:
+\inputminted[breaklines, firstline=12, lastline=19]{haskell}{../../app/rectangles/Main.hs}
+
+Примеры работы программы:
+\begin{minted}[]{bash}
+> stack run rectangles -- 7 7
+784
+> stack run rectangles -- 3 1
+6
+> stack run rectangles -- 16 20
+28560
+\end{minted}
+
+\chapter{Множества}
+Код основной функции программы на языке Haskell:
+\inputminted[breaklines, firstline=8, lastline=46]{haskell}{../../app/sets/Main.hs}
+
+Примеры работы программы:
+\begin{minted}[breaklines]{bash}
+> stack run sets -- examples/sets/sets1.txt examples/sets/sets2.txt
+Union of sets: "
+    ',-.?ABCDEFGHILMOPQSTVWabcdefghiklmnopqrstuvwxyz’"
+Intersection of sets: "
+    ,-.ADGIOSTWabcdefghiklmnoprstuvwxy"
+Difference of sets: "BCEFLMPQVq’"
+Size of alphabet 1 47
+Size of alphabet 2 41
+Size of set1 \ set2 11
+\end{minted}
+\end{document}

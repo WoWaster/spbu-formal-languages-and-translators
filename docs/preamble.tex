@@ -7,7 +7,7 @@
 \usepackage{fontspec}
 \setmainfont{CMU Serif}
 \setsansfont{CMU Sans Serif}
-\setmonofont{CMU Typewriter Text}
+\setmonofont{Fira Code}
 
 \usepackage{microtype} % Add fancy-schmancy font tricks.
 \usepackage[autostyle]{csquotes}
@@ -119,8 +119,10 @@
 \usetikzlibrary{external, automata, positioning}
 
 %%% Memoir settings
-\chapterstyle{ger}
-\setlength{\headheight}{2\baselineskip}
+\chapterstyle{section}
+\gdef\clearforchapter{}
+\semiisopage
+% \setlength{\headheight}{2\baselineskip}
 
 %%% HyperRef
 \usepackage{hyperref}
