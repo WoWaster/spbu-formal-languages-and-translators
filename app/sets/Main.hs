@@ -27,19 +27,23 @@ printSize i set = do
     putStr $ "Size of alphabet " ++ show i ++ " "
     print $ Set.size set
 
+printSizeOfIntersection :: Set Char -> Set Char -> IO ()
+printSizeOfIntersection set1 set2 = do
+    putStr "Size of set1 \\ set2 "
+    print $ Set.size $ Set.difference set1 set2
+
 sets :: Files -> IO ()
 sets (Files file1 file2) = do
     text1 <- readFile file1
     text2 <- readFile file2
     let symbols1 = Set.fromList text1
         symbols2 = Set.fromList text2
-     in do
-            printUnion symbols1 symbols2
-            printIntersect symbols1 symbols2
-            printDiff symbols1 symbols2
-            printSize 1 symbols1
-            printSize 2 symbols2
-            print $ Set.size $ Set.difference symbols1 symbols2
+    printUnion symbols1 symbols2
+    printIntersect symbols1 symbols2
+    printDiff symbols1 symbols2
+    printSize 1 symbols1
+    printSize 2 symbols2
+    printSizeOfIntersection symbols1 symbols2
 
 pFiles :: Parser Files
 pFiles =
