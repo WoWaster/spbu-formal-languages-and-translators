@@ -1,0 +1,40 @@
+\documentclass[12pt, oneside]{memoir}
+\input{../preamble.tex}
+\title{ТФЯиТ. Coding}
+\author{Николай Пономарев, группа 21.Б10-мм}
+
+% \tikzexternalize
+
+\begin{document}
+\maketitle
+
+Примеры работы программы на корректном вводе:
+\begin{minted}[breaklines]{bash}
+> cabal run coding -- examples/coding/expression.txt
+11 1 2 12 3 5 2 51 3 4
+12 1 2 5 2 101 52 3 13 102 3 5 2 2 103 53 6 103 52 3 3 4
+13 1 2 2 104 54 105 55 6 105 55 2 106 54 6 2 107 56 12 108 57 3 5 6 109 58 9 11 110 10 111 59 6 112 3 6 113 58 11 114 59 3 9 2 115 60 6 116 61 3 117 55 10 6 105 62 6 118 63 6 119 64 6 120 65 3 5 2 121 66 11 122 67 3 4
+1000
+\end{minted}
+
+Примеры работы программы на некорректном вводе:
+\begin{minted}[breaklines]{bash}
+> cabal run coding -- examples/coding/expression1.txt
+examples/coding/expression1.txt:14:45:
+    |
+ 14 |            )*( $cond1 '? expression $cond2 ':' ) .
+    |                                             ^
+unexpected ':'
+expecting '#', '$', ''', '(', ')', '*', ',', ';', '[', or terminal or nonterminal
+\end{minted}
+
+Код программы разделен на три файла:
+
+\texttt{CodingParser.hs}
+\inputminted[breaklines]{haskell}{../../src/CodingParser.hs}
+\texttt{Coding.hs}
+\inputminted[breaklines]{haskell}{../../src/Coding.hs}
+\texttt{Main.hs}
+\inputminted[breaklines]{haskell}{../../app/coding/Main.hs}
+
+\end{document}
