@@ -17,15 +17,18 @@
 %% Math
 \usepackage{amsmath, amsfonts, amssymb, amsthm, mathtools} % Advanced math tools.
 \usepackage{thmtools}
-\usepackage{unicode-math} % Allow TTF and OTF fonts in math and allow direct typing unicode math characters.
+% \usepackage{unicode-math} % Allow TTF and OTF fonts in math and allow direct typing unicode math characters.
+\usepackage{euler-math}
 \unimathsetup{
     warnings-off={
             mathtools-colon,
             mathtools-overbracket
         }
 }
-\setmathfont{Latin Modern Math} % default
-\setmathfont[range={\setminus,\varnothing,\smashtimes}]{Asana Math}
+% \setmathfont{Latin Modern Math} % default
+% \setmathfont[range={\setminus,\varnothing,\smashtimes}]{Asana Math}
+% \setmainfont{CMU Concrete}
+\setmainfont{DejaVu Serif}
 
 %%% Images
 \usepackage{graphicx}

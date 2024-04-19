@@ -138,5 +138,16 @@
 %     {Воспользуемся алгоритмом теоремы 3.3.}
 
 % \end{solution}
+\newpage
+Грамматика $\lambda$-исчисления:
+\begin{align*}
+    x \in V                & \implies x \in \Lambda             \\
+    M, N \in \Lambda       & \implies (M\ N) \in \Lambda        \\
+    M \in \Lambda, x \in V & \implies (\lambda x.M) \in \Lambda
+\end{align*}
 
+Или
+\[\Lambda ::= V \mid (\Lambda\ \Lambda) \mid (\lambda V.\Lambda)\]
+
+\[\forall \ \exists\]
 \end{document}
